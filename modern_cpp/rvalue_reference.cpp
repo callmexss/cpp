@@ -9,6 +9,7 @@
 
 #include <iostream>
 #include <cassert>
+#include <vector>
 
 using namespace std;
 
@@ -42,6 +43,14 @@ public:
         }
     }
 
+    XuVector(XuVector &&rhs) // Move constructor
+    {
+        cout << "Move Constructor" << endl;
+        m_size = rhs.m_size;
+        m_arr = rhs.m_arr;
+        rhs.m_arr = nullptr;
+    }
+
     int size() { return m_size; }
 
     // double operator[](const int& i) // without `&` this method will be readonly
@@ -56,7 +65,19 @@ private:
     double *m_arr; // a big array
 };
 
-void foo(XuVector v, bool print=false)
+void foo(XuVector v, bool print = false)
+{
+    if (print)
+    {
+        for (int i = 0; i < v.size(); ++i)
+        {
+            cout << v[i] << " ";
+        }
+        cout << endl;
+    }
+}
+
+void fooByRef(XuVector &v, bool print = false)
 {
     if (print)
     {
@@ -94,7 +115,7 @@ Dog createDog()
     return d;
 }
 
-Dog& createDogByRef()
+Dog &createDogByRef()
 {
     Dog d;
     cout << "inner address: " << &d << endl;
@@ -130,9 +151,51 @@ int main(int argc, char const *argv[])
 
     XuVector reusable = createXuVector(n);
     cout << "outer address: " << &reusable << endl;
-    foo(reusable, true);
+    fooByRef(reusable, true);       // call no constructor
+    foo(reusable, true);            // call copy constructor
+    foo(std::move(reusable), true); // call move constructor. reusable.m_arr == nullptr;
+    // reusable is distroyed here
 
     foo(createXuVector(n), true);
 
     return 0;
 }
+
+/**
+ * Note 1：the most useful place for rvalue reference is ouerloading copy 
+ * constructor and copy assignment operator, to achieve move semantics.
+ */
+class X
+{
+public:
+    X &X::operator=(X const &rhs);
+    X &X::operator=(X &&rhs);
+};
+
+/**
+ *  Note 2: Move semantics is implemented for all STL containers, which means:
+ *      a. Move to C++ 11, Your code will be faster without changing a thing.
+ *      b. Passing-By-Value can be used for STL containers.
+ */
+
+vector<int> foo()
+{
+    vector<int> myvector;
+    //…
+    return myvector;
+}
+
+void hoo(string s);
+
+bool goo(vector<int> &arg); //Pass by reference if you use arg to carry
+                            //data back from goo（）
+
+/* Move Constructor / Move Assignment Operator:
+ * Purpose: conveniently auoid costly and unnecessary deep copying.
+ * 
+ * 1. They are particularly powerful where passing by reference and
+ *    passing by ualue are both used.
+ * 
+ * 2. They give you finer control of which part of your object to
+ *    be moved.
+ */
