@@ -245,6 +245,14 @@ void relay4(T &&arg)
 // std::move<T>(arg); // Turn arg into an rvalue type 
 // std::forward<T>(arg); // Turn arg to type of T&&
 
+/*
+ * Summary:
+ *
+ * Usage of rvalue reference:
+ * 1. Move semantics
+ * 2. Perfect Forwarding
+ */
+
 
 int main(int argc, char const *argv[])
 {
