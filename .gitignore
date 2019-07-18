@@ -33,3 +33,6 @@
 
 # Editor
 *.vscode
+
+# other stuff
+*.log
