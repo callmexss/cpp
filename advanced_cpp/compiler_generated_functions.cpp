@@ -59,8 +59,16 @@ public:
 class dog3
 {
     collar m_collar;
+    string& m_name; // must be initialized before use and can only be initialized in constructor
 };
 
+/* C++ 11 Update */
+class dog4
+{
+public:
+    dog4() = default;
+    dog4(string name) {};
+};
 
 int main()
 {
