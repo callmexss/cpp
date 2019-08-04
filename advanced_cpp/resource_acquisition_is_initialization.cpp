@@ -116,3 +116,54 @@
 //     Lock L2(L1);
 //     return 0;
 // }
+
+#include <iostream>
+#include <mutex>
+#include <thread>
+
+using namespace std;
+
+class Mutex
+{
+private:
+    std::mutex m_mutex;
+
+public:
+    void lock() { m_mutex.lock(); }
+    void unlock() { m_mutex.unlock(); }
+
+};
+
+class LockGuard
+{
+private:
+    Mutex& m_mu;
+
+public:
+    LockGuard(Mutex &mu) : m_mu(mu) { m_mu.lock(); }
+    ~LockGuard() { m_mu.unlock(); }
+    LockGuard(const Mutex&) = delete;
+};
+
+int main()
+{
+    int i = 0;
+    Mutex mu;
+
+    // auto f_without_lock_guard = [&i]() { while (i < 100) { i++; cout << i << endl; } };
+    // std::thread th1(f_without_lock_guard);
+    // std::thread th2(f_without_lock_guard);
+
+    // th1.join();
+    // th2.join();
+    
+
+    auto f_with_lock_guard = [&i, &mu]() { while (i < 100) { LockGuard locker = LockGuard(mu); i++; cout << i << endl; } };
+    std::thread th3(f_with_lock_guard);
+    std::thread th4(f_with_lock_guard);
+
+    th3.join();
+    th4.join();
+
+    return 0;
+}
