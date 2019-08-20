@@ -89,3 +89,11 @@ int main(int argc, const char** argv)
     cstyleCasting();
     return 0;
 }
+
+/**
+ * Generally C++ style of casts are preferred over the C-style, because:
+ * 1. Easier to identify in the code.
+ * 2. Less usage error. C++ style provides:
+ *     a. Narrowly specified purpose of each cast, and 
+ *     b. Run-time type check capability.
+ */
