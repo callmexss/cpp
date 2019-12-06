@@ -3,6 +3,8 @@
 #include <vector>
 #include <queue>
 #include <stack>
+#include <list>
+#include <forward_list>
 
 #include "../output_container.h"
 
@@ -73,9 +75,114 @@ class VectorTest : public Run
 private:
     void display() override { std::cout << m_vec << std::endl; }
     void randomAccess() override { std::cout << m_vec[1] << std::endl; }
+    void memberFunc() override
+    {
+        std::cout << *m_vec.begin() << std::endl;
+        std::cout << *m_vec.end() << std::endl;
+        std::cout << m_vec.size() << std::endl;
+    }
 
 private:
     std::vector<int> m_vec = {1, 2, 3, 4};
+
+};
+
+class DequeTest : public Run
+{
+public:
+    void memberFunc() override
+    {
+        m_deque.push_front(1);
+        std::cout << m_deque.front() << std::endl;
+        std::cout << m_deque.back() << std::endl;
+        std::cout << m_deque.size() << std::endl;
+        std::cout << m_deque.empty() << std::endl;
+    }
+
+private:
+    std::deque<int> m_deque{1, 2, 3, 4, 5};
+
+};
+
+class ListTest : public Run
+{
+public:
+    void memberFunc() override
+    {
+        std::list<int> new_list{4, 3, 2, 1};
+        m_list.merge(new_list);
+        m_list.sort();
+        while (!m_list.empty())
+        {
+            std::cout << m_list.front() << std::endl;
+            m_list.pop_front();
+        }
+    }
+
+private:
+    std::list<int> m_list{1, 2, 3, 4};
+};
+
+class ForwardListTest : public Run
+{
+public:
+    void display() override { std::cout << m_flist << std::endl; }
+    void memberFunc() override
+    {
+        std::forward_list<int> new_list{3, 2, 1};
+        m_flist.merge(new_list);
+        m_flist.push_front(5);
+        m_flist.sort();
+        display();
+    }
+
+private:
+    std::forward_list<int> m_flist{1, 2, 3, 4};
+};
+
+class QueueTest : public Run
+{
+public:
+    void memberFunc() override
+    {
+        for (int i = 0; i < 10; ++i)
+        {
+            m_queue.push(i);
+        }
+
+        while (!m_queue.empty())
+        {
+            std::cout << m_queue.front() << std::endl;
+            m_queue.pop();
+        }
+
+    }
+
+private:
+    std::queue<int> m_queue;
+
+};
+
+class StackTest : public Run
+{
+public:
+    void memberFunc() override
+    {
+        for (int i = 0; i < 10; ++i)
+        {
+            m_stack.push(i);
+        }
+
+        while (!m_stack.empty())
+        {
+            std::cout << m_stack.top() << std::endl;
+            m_stack.pop();
+        }
+
+    }
+
+private:
+    std::stack<int> m_stack;
 
 };
 
@@ -84,10 +191,25 @@ int main(int argc, char const *argv[])
 {
     Run* st = new StringTest;
     Run* vt = new VectorTest;
+    Run* dt = new DequeTest;
+    Run* lt = new ListTest;
+    Run* ft = new ForwardListTest;
+    Run* qt = new QueueTest;
+    Run* sat = new StackTest;
     st->run();
     vt->run();
+    dt->run();
+    lt->run();
+    ft->run();
+    qt->run();
+    sat->run();
 
     delete st;
     delete vt;
+    delete dt;
+    delete lt;
+    delete ft;
+    delete qt;
+    delete sat;
     return 0;
 }
